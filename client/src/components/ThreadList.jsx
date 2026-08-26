@@ -1,9 +1,8 @@
 import { useState } from "react";
 import {
-  useQuery,
   keepPreviousData,
+  useQuery,
 } from "@tanstack/react-query";
-
 import { getThreads } from "../services/threads.service";
 import SearchBar from "./SearchBar.jsx";
 import SortDropdown from "./SortDropdown.jsx";
@@ -16,13 +15,7 @@ export default function ThreadList() {
   const debouncedSearch = useDebounce(search, 300);
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: [
-      "threads",
-      {
-        search: debouncedSearch,
-        sort,
-      },
-    ],
+    queryKey: ["threads", { search: debouncedSearch, sort }],
     queryFn: ({ queryKey }) => getThreads(queryKey[1]),
     placeholderData: keepPreviousData,
   });
@@ -30,21 +23,12 @@ export default function ThreadList() {
   return (
     <div>
       <div className="filters">
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-        />
-
-        <SortDropdown
-          value={sort}
-          onChange={setSort}
-        />
+        <SearchBar value={search} onChange={setSearch} />
+        <SortDropdown value={sort} onChange={setSort} />
       </div>
 
       {isError && (
-        <p className="err">
-          Error: {error.message}
-        </p>
+        <p className="err">Error: {error.message}</p>
       )}
 
       {isPending ? (
